@@ -1,4 +1,4 @@
-describe('Visitar site DemoQA', () => {
+describe('Visitar site GloabalsQA', () => {
     it('Entrar na homePage', () => {
         cy.visit('https://www.globalsqa.com/angularJs-protractor/BankingProject/#/login');
     })
