@@ -1,67 +1,46 @@
-describe.skip('visit google', () => {
-    it('pesquisa inatel', () => {
-        cy.visit("https://google.com.br");
-        cy.get("input[name=q]").type("INATEL {enter}")
+describe('Visitar site DemoQA', () => {
+    it('Entrar na homePage', () => {
+        cy.visit('https://www.globalsqa.com/angularJs-protractor/BankingProject/#/login');
     })
 })
 
-describe.skip('Formulario testQA cadastro', ()=>{
-    it('criando um usuário no globalQA', () => {
-        cy.visit("https://www.globalsqa.com/angularJs-protractor/registration-login-example/#/login")
-        cy.get(".btn-link").click();
-        cy.get("#firstName").type("Ítalo")
-        cy.get("input[name=lastName]").type("Moura")
-        cy.get("#username").type("sdfsa")
-        cy.get("#password").type("asfsafs")
-        cy.get(".btn-primary").click()
-        cy.get(".alert-success").should("contain.text", "Registration successful")
-    })
+describe('Teste form customer', () => {
+    it('Login na plataforma com sucesso', () => {
+        loginCustomer();
 
-    it('Login na plataforma com sucesso!', () => {
-        let userInfo = createUser()
-        cy.visit("https://www.globalsqa.com/angularJs-protractor/registration-login-example/#/login")
-        cy.get("input[name=username]").type(userInfo[0])
-        cy.get("input[name=password]").type(userInfo[1])
-        cy.get(".btn-primary").click()
     })
 })
 
-describe('teste globalQA radio,select e checkbox', () => {
-    it('campos diferenciados', () => {
-        cy.on('uncaught:exception', ()=> {
-            return false
-        })
-        cy.visit("https://www.globalsqa.com/samplepagetest/")
-        cy.get("#g2599-name").type("teste")
-        cy.get("#g2599-experienceinyears").select('3-5').should("have.value", "3-5")
-        cy.get(".grunion-field-checkbox-multiple-wrap [type=checkbox]").first().check()
-        cy.get(".grunion-field-checkbox-multiple-wrap [type=checkbox]").check("Automation Testing")
+// Cenario Negativo
+describe('Teste login sem info', () => {
+    it('Login na plataforma com sucesso', () => {
+        cy.contains('Bank Manager Login').click();
+        cy.contains('Add Customer').click();
+        cy.get('button[type=submit]').click();
+        // Tenta encontrar a mensagem de erro
+        // cy.contains('Please fill out this field');
 
-        cy.get(".grunion-field-radio-wrap [type=radio]").first().check()
-        cy.get(".grunion-field-radio-wrap [type=radio]").last().check()
+        cy.contains('Home').click();
 
-        cy.get("input[name=file-553]").selectFile('cypress/fixtures/batman.jpg', { action: 'drag-drop' })
     })
 })
 
-function createUser() {
-    let hora = new Date().getHours().toString();
-    let min = new Date().getMinutes().toString();
-    let sec = new Date().getSeconds().toString();
+describe('Teste delete customer', () => {
+    it('Abrir lista e deletar um customer', () => {
+        cy.contains('Bank Manager Login').click();
+        cy.contains('Customers').click();
+        cy.get('.form-control').type('Hermoine');
+        cy.get(':nth-child(5) > button').click();
+    })
+})
 
-    let username = 'testQA_' + hora + min + sec
-    let password = hora + min + sec
-
-    let user_info = [username, password]
-
-    cy.visit("https://www.globalsqa.com/angularJs-protractor/registration-login-example/#/login")
-    cy.get(".btn-link").click();
-    cy.get("#firstName").type("Ítalo")
-    cy.get("input[name=lastName]").type("Moura")
-    cy.get("#username").type(username)
-    cy.get("#password").type(password)
-    cy.get(".btn-primary").click()
-    cy.get(".alert-success").should("contain.text", "Registration successful")
-
-    return user_info;
+function loginCustomer() {
+    let userName = 'Ron Weasly';
+    cy.contains('Customer Login').click();
+    cy.get('#userSelect').select(userName);
+    cy.contains('Login').click();
+    // Verificando o user na WelcomePage
+    cy.contains('Welcome Ron Weasly');
+    // Volta pra homePage
+    cy.contains('Home').click();
 }
